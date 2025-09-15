@@ -9,7 +9,7 @@ class IsCreatorOrTenantAdmin(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if request.user.role == "ADMIN" and request.user.tenant == obj.tenant:
+        if request.user.role == "admin" and request.user.tenant == obj.tenant:
             return True
 
         return obj.created_by == request.user
