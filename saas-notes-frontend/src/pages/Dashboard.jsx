@@ -45,6 +45,16 @@ function Dashboard({ user, setAuth }) {
     }
   };
 
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      await api.patch(`notes/${id}/`, updatedData);
+      loadNotes(); 
+    } catch (err) {
+      console.error("Error updating note:", err);
+    }
+  };
+
+
   const handleLogout = () => {
     logout();
     setAuth(null);
@@ -69,7 +79,7 @@ function Dashboard({ user, setAuth }) {
       {/* NotesList */}
       <div className="card p-3 mb-3 shadow-sm">
         <h5>Your Notes</h5>
-        <NotesList notes={notes} onDelete={handleDelete} />
+        <NotesList notes={notes} onDelete={handleDelete} onUpdate={handleUpdate} />
       </div>
 
       {/* Upgrade Button */}

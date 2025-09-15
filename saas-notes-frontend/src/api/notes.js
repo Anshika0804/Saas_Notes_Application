@@ -13,3 +13,9 @@ export const createNote = async (note) => {
 export const deleteNote = async (id) => {
   await axiosInstance.delete(`notes/${id}/`);
 };
+
+export const updateNote = async (id, updatedData) => {
+  const res = await axiosInstance.patch(`notes/${id}/`, updatedData);
+  return res.data;
+};
+
