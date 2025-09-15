@@ -29,7 +29,10 @@ class TenantUpgradeView(APIView):
 
         # Only Admins of this tenant can upgrade
         if request.user.role != "admin" or request.user.tenant != tenant:
-            raise PermissionDenied("Only tenant admins can upgrade the subscription.")
+            return Response(
+                {"warning": "Only tenant admins can upgrade the subscription."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         tenant.plan = "pro"
         tenant.save()
