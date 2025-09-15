@@ -94,6 +94,7 @@ WSGI_APPLICATION = "saas_notes.wsgi.application"
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
+
 # Database
 DATABASES = {
     "default": dj_database_url.config(
