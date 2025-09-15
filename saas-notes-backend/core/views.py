@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserCreateSerializer
+from .serializers import UserCreateSerializer, UserListSerializer
 from django.contrib.auth import get_user_model
 from .models import Tenant
 
@@ -17,7 +17,7 @@ class UserCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         if self.request.user.role != "admin":
             raise PermissionDenied("Only tenant admins can invite users.")
-        serializer.save(tenant=self.request.user.tenant)
+        serializer.save(tenant=self.request.user.tenant, role="member")
 
 
 
@@ -61,3 +61,10 @@ class MeView(APIView):
                 "plan": tenant.plan if tenant else None,
             }
         })
+
+class HealthView(APIView):
+    authentication_classes = []  
+    permission_classes = []
+
+    def get(self, request):
+        return Response({"status": "ok"}, status=status.HTTP_200_OK)

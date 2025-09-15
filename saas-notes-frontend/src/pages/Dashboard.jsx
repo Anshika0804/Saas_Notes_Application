@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import NotesList from "../components/NotesList";
 import NoteForm from "../components/NoteForm";
 import UpgradeButton from "../components/UpgradeButton";
+import InviteUserForm from "../components/InviteUserForm";
 import { fetchMe, logout } from "../api/auth";
 import api from "../api/axiosInstance";
 
@@ -22,7 +23,9 @@ function Dashboard({ user, setAuth }) {
     try {
       const res = await api.get("notes/");
       setNotes(res.data);
-      setLimitReached(res.data.length >= 3);
+      setLimitReached(
+        res.data.length >= 3 && currentUser?.tenant?.plan === "free"
+      );
     } catch (err) {
       console.error("Error loading notes:", err);
     }
@@ -31,7 +34,7 @@ function Dashboard({ user, setAuth }) {
   // Load notes on mount
   useEffect(() => {
     loadNotes();
-  }, []);
+  }, [loadNotes]);
 
   const handleDelete = async (id) => {
     try {
@@ -51,7 +54,7 @@ function Dashboard({ user, setAuth }) {
     <div className="container mt-4">
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Dashboard</h2>
+        <h2 className="fw-bold">Dashboard</h2>
         <button className="btn btn-danger" onClick={handleLogout}>
           Logout
         </button>
@@ -70,11 +73,22 @@ function Dashboard({ user, setAuth }) {
       </div>
 
       {/* Upgrade Button */}
-      {limitReached && currentUser?.tenant?.plan === "free" && (
+      {limitReached && currentUser?.role === "admin" && (
         <div className="text-center my-3">
           <UpgradeButton tenant={currentUser.tenant} onUpgrade={loadNotes} />
         </div>
       )}
+
+      {/* Invite Users */}
+      <div className="my-4">
+        {currentUser?.role === "admin" ? (
+          <InviteUserForm onInvite={() => console.log("User invited")} />
+        ) : (
+          <div className="alert alert-warning text-center">
+            Only admins can invite new users.
+          </div>
+        )}
+      </div>
     </div>
   );
 }
